@@ -3,3 +3,11 @@ dist/
 dist-server/
 .env
 *.DS_Store
+.claude/
+assets/
+index.html
+icon-192.png
+icon-512.png
+favicon.png
+logo.png
+manifest.json
