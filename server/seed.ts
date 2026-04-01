@@ -4,21 +4,22 @@ import { addChannel, addFeed } from "./storage";
 let seeded = false;
 
 const SEED_CHANNELS: Omit<Channel, "createdAt" | "updatedAt">[] = [
-  { id: "UCwAnu01qlnVg1Ai2AbtTMaA", name: "Jeff Su" },
+  { id: "UCwAnu01qInVg1Ai2AbtTMAa", name: "Jeff Su" },
   { id: "UCBJycsmduvYEL83R_U4JriQ", name: "Marques Brownlee" },
-  { id: "UC0yHBbz4Oxq9FwmVX2BBOqLg", name: "AI Master" },
-  { id: "UCWzW3FIOCt3UEpW6hYK4q", name: "AI Foundations" },
-  { id: "UCQ66zvpQ0rlNFs_7hFCfmaw", name: "Teachers Tech" },
-  { id: "UC-h5Sz7-O_4kbdzPy6hxYd9g", name: "Ziet Invests" },
-  { id: "UCmeU2DYVfyw8OwMBGzZEwNbw", name: "Paul J Lipsky" },
-  { id: "UCrB7UfnkosBjAh9Og3a9NdWw", name: "Grace Leung" },
-  { id: "UCphIe8mo18P08aKClgt3i89", name: "Matt Wolfe" },
-  { id: "UCwSozl89Ij2zUDzQ4jGJD3g", name: "Skill Leap AI" },
-  { id: "UCpCrcUPtVlvXLdNhnexu-WQ", name: "Stephen Robles" },
-  { id: "UCpko_-a4wgz2u_DgDgd9fqA", name: "Tasia Custode" },
-  { id: "UCxMGJegjDSdGm3MA2VtiIOQ", name: "David Ondrej" },
-  { id: "UCddiUEpeqJcYeBxX1IVBKvQ", name: "Itssssss Jack" },
-  { id: "UCsXVk37bltHxD1rDPwtNM8Q", name: "theMITMonk" },
+  { id: "UCOyHbz4OxdQFwmVX2BBQqLg", name: "AI Master" },
+  { id: "UC3WzwfV3lCOt3uEPpW6hYK4g", name: "AI Foundations" },
+  { id: "UCO66zvpQorINfs_7hFCfmaw", name: "Teachers Tech" },
+  { id: "UC-h5sZ-O_4KbdzPy6hxYd9g", name: "Ziet Invests" },
+  { id: "UCmeU2DYiVy80wMBGZzEWnbw", name: "Paul J Lipsky" },
+  { id: "UCrB7UFnkosBjAhOg3a9NdWw", name: "Grace Leung" },
+  { id: "UChpleBmo18P08aKClgti38g", name: "Matt Wolfe" },
+  { id: "UCwSozl89Jl2zUDzQ4jGJD3g", name: "Skill Leap AI" },
+  { id: "UCpCrcUPVtlvXLDnHnexu-WQ", name: "Stephen Robles" },
+  { id: "UCNQbF87QPV685oFnHxb0zPg", name: "Tasia Custode" },
+  { id: "UCPGrgwfbkjTlgPoOh2q1BAg", name: "David Ondrej" },
+  { id: "UCxVxcTULO9cFU6SB9qVaisQ", name: "Itssssss Jack" },
+  { id: "UC4ZVkG3RQPzvZk7aIlVjcCg", name: "theMITMonk" },
+  { id: "UC2ojq-nuP8ceeHqiroeKhBA", name: "Nate Herk | AI Automation" },
 ];
 
 const SEED_FEEDS: Feed[] = [
