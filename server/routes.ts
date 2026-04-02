@@ -433,13 +433,19 @@ router.post("/summary", async (req: Request, res: Response) => {
   const cleanText = stripHtml(rawText);
   console.log(`[summary] raw length=${rawText.length} clean length=${cleanText.length}`);
 
-  if (cleanText.length < 80) {
-    return res.json({ error: true, message: "Summary unavailable: not enough content" });
-  }
-
   if (!apiKey) {
     return res.json({ error: true, message: "Summary unavailable: PERPLEXITY_API_KEY not set" });
   }
+
+  // If content is too short but we have a URL, ask Perplexity to look it up
+  const hasEnoughContent = cleanText.length >= 80;
+  if (!hasEnoughContent && !url) {
+    return res.json({ error: true, message: "Summary unavailable: not enough content" });
+  }
+
+  const userPrompt = hasEnoughContent
+    ? `Summarize this article in 3-5 concise bullet points:\n\n${cleanText.slice(0, 4000)}`
+    : `Please look up and summarize this news article in 3-5 concise bullet points.\n\nTitle: ${title || ""}\nURL: ${url}`;
 
   try {
     const perplexityRes = await fetch("https://api.perplexity.ai/chat/completions", {
@@ -453,7 +459,7 @@ router.post("/summary", async (req: Request, res: Response) => {
         messages: [
           {
             role: "user",
-            content: `Summarize this article in 3-5 concise bullet points:\n\n${cleanText.slice(0, 4000)}`,
+            content: userPrompt,
           },
         ],
         max_tokens: 400,
