@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import xml2js from "xml2js";
+import Anthropic from "@anthropic-ai/sdk";
 import type { Channel, Video, Feed, FeedItem } from "../shared/schema";
 import {
   getChannels,
@@ -418,7 +419,7 @@ router.post("/summary", async (req: Request, res: Response) => {
   };
 
   const cacheKey = id || url || title || "";
-  const apiKey = process.env.PERPLEXITY_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   console.log(`[summary] id=${id} url=${url} apiKey=${apiKey ? "present" : "MISSING"}`);
 
   // Check cache
@@ -430,52 +431,46 @@ router.post("/summary", async (req: Request, res: Response) => {
   }
 
   const rawText = content || snippet || description || title || "";
-  const cleanText = stripHtml(rawText);
+  let cleanText = stripHtml(rawText);
   console.log(`[summary] raw length=${rawText.length} clean length=${cleanText.length}`);
 
   if (!apiKey) {
-    return res.json({ error: true, message: "Summary unavailable: PERPLEXITY_API_KEY not set" });
+    return res.json({ error: true, message: "Summary unavailable: ANTHROPIC_API_KEY not set" });
   }
 
-  // If content is too short but we have a URL, ask Perplexity to look it up
+  // If content is too short but we have a URL, fetch the article page
   const hasEnoughContent = cleanText.length >= 80;
-  if (!hasEnoughContent && !url) {
+  if (!hasEnoughContent && url) {
+    try {
+      const pageRes = await fetch(url, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; RogerTubeBot/1.0)" },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (pageRes.ok) {
+        const html = await pageRes.text();
+        cleanText = stripHtml(html).replace(/\s+/g, " ").trim().slice(0, 4000);
+        console.log(`[summary] fetched article, extracted ${cleanText.length} chars`);
+      }
+    } catch (fetchErr: any) {
+      console.warn(`[summary] Failed to fetch article URL: ${fetchErr.message}`);
+    }
+  }
+
+  if (cleanText.length < 80) {
     return res.json({ error: true, message: "Summary unavailable: not enough content" });
   }
 
-  const userPrompt = hasEnoughContent
-    ? `Summarize this article in 3-5 concise bullet points:\n\n${cleanText.slice(0, 4000)}`
-    : `Please look up and summarize this news article in 3-5 concise bullet points.\n\nTitle: ${title || ""}\nURL: ${url}`;
+  const userPrompt = `Summarize this article in 3-5 concise bullet points. Return only the bullet points, one per line, starting each with a dash (-).\n\nTitle: ${title || ""}\n\n${cleanText.slice(0, 4000)}`;
 
   try {
-    const perplexityRes = await fetch("https://api.perplexity.ai/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "sonar",
-        messages: [
-          {
-            role: "user",
-            content: userPrompt,
-          },
-        ],
-        max_tokens: 400,
-        temperature: 0.2,
-      }),
-      signal: AbortSignal.timeout(20000),
+    const anthropic = new Anthropic({ apiKey });
+    const message = await anthropic.messages.create({
+      model: "claude-opus-4-6",
+      max_tokens: 400,
+      messages: [{ role: "user", content: userPrompt }],
     });
 
-    if (!perplexityRes.ok) {
-      const errText = await perplexityRes.text();
-      console.error(`[summary] Perplexity error ${perplexityRes.status}: ${errText}`);
-      return res.json({ error: true, message: `Summary failed: HTTP ${perplexityRes.status}` });
-    }
-
-    const data = await perplexityRes.json() as any;
-    const text: string = data.choices?.[0]?.message?.content || "";
+    const text = message.content[0].type === "text" ? message.content[0].text : "";
 
     // Parse bullet points
     const bullets = text
