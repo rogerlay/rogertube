@@ -6,9 +6,9 @@ let seeded = false;
 const SEED_CHANNELS: Omit<Channel, "createdAt" | "updatedAt">[] = [
   { id: "UCwAnu01qlnVg1Ai2AbtTMaA", name: "Jeff Su" },
   { id: "UCBJycsmduvYEL83R_U4JriQ", name: "Marques Brownlee" },
-  { id: "UCreHwFSqI8wvUjIMIc74TtA", name: "AI Master" },
+  { id: "UC0yHbz4OxdQFwmVX2BBQqLg", name: "AI Master" },
   { id: "UCWZwfV3ICOt3uEPpW6hYK4g", name: "AI Foundations" },
-  { id: "UCk7DcAEWN8dna2A_KYSSslQ", name: "Teachers Tech" },
+  { id: "UCO66zvpQorlNfs_7hFCfmaw", name: "Teachers Tech" },
   { id: "UC-h5sZ-O_4KbdzPy6hxYd9g", name: "Ziet Invests" },
   { id: "UCmeU2DYiVy80wMBGZzEWnbw", name: "Paul J Lipsky" },
   { id: "UCrB7UFnkosBjAhOg3a9NdWw", name: "Grace Leung" },
