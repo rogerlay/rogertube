@@ -20,6 +20,9 @@ const SEED_CHANNELS: Omit<Channel, "createdAt" | "updatedAt">[] = [
   { id: "UCxVxcTULO9cFU6SB9qVaisQ", name: "Itssssss Jack" },
   { id: "UC4ZVkG3RQPzvZk7alIVjcCg", name: "theMITMonk" },
   { id: "UC2ojq-nuP8ceeHqiroeKhBA", name: "Nate Herk | AI Automation" },
+  { id: "UCZv_19T3Yuk8k0RZRGNqgow", name: "Alek Sheffy" },
+  { id: "UCf6AGqO98eGk11nfazociVQ", name: "ByteGrad" },
+  { id: "UCo92D-IJgfR-ZUe1_zeDFDg", name: "Charlie Chang" },
 ];
 
 const SEED_FEEDS: Feed[] = [
